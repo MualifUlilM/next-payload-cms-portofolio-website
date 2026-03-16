@@ -1,5 +1,5 @@
 import type { GlobalConfig } from "payload";
-import { revalidateCollection } from "@/lib/revalidate";
+import { revalidateCollection } from "../lib/revalidate.ts";
 
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",

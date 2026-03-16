@@ -6,16 +6,16 @@ import path from "path";
 import sharp from "sharp";
 
 // Collections
-import { Projects } from "./collections/Projects";
-import { Experience } from "./collections/Experience";
-import { Testimonials } from "./collections/Testimonials";
-import { Posts } from "./collections/Posts";
-import { Media } from "./collections/Media";
-import { Users } from "./collections/Users";
-import { Skills } from "./collections/Skills";
+import { Projects } from "./collections/Projects.ts";
+import { Experience } from "./collections/Experience.ts";
+import { Testimonials } from "./collections/Testimonials.ts";
+import { Posts } from "./collections/Posts.ts";
+import { Media } from "./collections/Media.ts";
+import { Users } from "./collections/Users.ts";
+import { Skills } from "./collections/Skills.ts";
 
 // Globals
-import { SiteSettings } from "./globals/SiteSettings";
+import { SiteSettings } from "./globals/SiteSettings.ts";
 
 const databaseURL =
   process.env.DATABASE_URI?.trim() || `file:${path.resolve(process.cwd(), "data.db")}`;

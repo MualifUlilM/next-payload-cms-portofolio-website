@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { revalidateCollection } from "@/lib/revalidate";
+import { revalidateCollection } from "../lib/revalidate.ts";
 
 export const Posts: CollectionConfig = {
   slug: "posts",

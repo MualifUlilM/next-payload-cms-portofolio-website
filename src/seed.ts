@@ -1,7 +1,7 @@
 import { getPayload } from "payload";
 
 async function seed() {
-  const config = (await import("./payload.config")).default;
+  const config = (await import("./payload.config.ts")).default;
   const payload = await getPayload({ config });
   console.log("🌱 Starting seed...");
 
