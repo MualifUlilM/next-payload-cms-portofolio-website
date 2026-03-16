@@ -52,7 +52,9 @@ export default async function BlogPage() {
                     {post.tags && post.tags.length > 0 && (
                       <div className="flex gap-1.5 mb-2">
                         {post.tags.slice(0, 2).map((tag) => (
-                          <Badge key={tag} variant="accent">{tag}</Badge>
+                          <Badge key={tag.id ?? tag.tag} variant="accent">
+                            {tag.tag}
+                          </Badge>
                         ))}
                       </div>
                     )}
