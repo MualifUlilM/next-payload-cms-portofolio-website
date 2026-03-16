@@ -32,6 +32,17 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# Payload CMS
+/src/payload-types.ts
+/public/media/*
+!/public/media/.gitkeep
+
+# SQLite database
+*.db
+*.db-shm
+*.db-wal
 
 # vercel
 .vercel
