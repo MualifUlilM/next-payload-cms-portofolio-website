@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "node --env-file=.env.local --import tsx/esm src/seed.ts",
-    "payload": "payload"
+    "payload": "payload",
+    "postpayload": "node scripts/fix-payload-migration-imports.mjs",
+    "payload:fix-migrations": "node scripts/fix-payload-migration-imports.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.79.0",
