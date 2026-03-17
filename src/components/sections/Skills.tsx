@@ -13,22 +13,26 @@ const FALLBACK_GROUPS: SkillGroup[] = [
   {
     id: "frontend",
     category: "Frontend",
+    createdAt: "",
     intro:
       "Building fast, accessible interfaces with React and Next.js — from static marketing pages to complex data-driven applications.",
     items: [
       { skill: "React" }, { skill: "Next.js" }, { skill: "TypeScript" },
       { skill: "Tailwind CSS" }, { skill: "Framer Motion" }, { skill: "HTML / CSS" },
     ],
+    updatedAt: "",
   },
   {
     id: "backend",
     category: "Backend",
+    createdAt: "",
     intro:
       "Designing databases and APIs that support real product needs: row-level security, efficient queries, and CMS structures.",
     items: [
       { skill: "Payload CMS" }, { skill: "Supabase" }, { skill: "PostgreSQL" },
       { skill: "Node.js" }, { skill: "REST APIs" }, { skill: "tRPC" },
     ],
+    updatedAt: "",
   },
 ];
 
