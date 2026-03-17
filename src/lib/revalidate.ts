@@ -1,7 +1,6 @@
-import { revalidateTag } from "next/cache";
-
-export function revalidateCollection(tag: string) {
+export async function revalidateCollection(tag: string) {
   try {
+    const { revalidateTag } = await import("next/cache");
     revalidateTag(tag);
   } catch {
     // silently fail outside Next.js context
