@@ -129,7 +129,7 @@ export function Contact({
                   </div>
                   <h3 className="text-lg font-semibold text-[#111111] mb-2">Message sent</h3>
                   <p className="text-sm text-[#666666]">
-                    Thanks for reaching out. I'll get back to you within 24 hours.
+                    Thanks for reaching out. I&apos;ll get back to you within 24 hours.
                   </p>
                 </div>
               </div>
