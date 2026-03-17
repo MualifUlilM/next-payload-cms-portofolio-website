@@ -6,6 +6,7 @@
 
 import { unstable_cache } from "next/cache";
 import { getPayload } from "payload";
+import type { Where } from "payload";
 import config from "@/payload.config";
 import type {
   Project,
@@ -32,7 +33,7 @@ export const getProjects = unstable_cache(
   }): Promise<Project[]> => {
     try {
       const payload = await getPayloadClient();
-      const where: Record<string, unknown> = {};
+      const where: Where = {};
       if (options?.featured !== undefined) where.featured = { equals: options.featured };
       if (options?.category) where.category = { equals: options.category };
 
@@ -105,7 +106,7 @@ export const getTestimonials = unstable_cache(
   async (featured?: boolean): Promise<Testimonial[]> => {
     try {
       const payload = await getPayloadClient();
-      const where: Record<string, unknown> = {};
+      const where: Where = {};
       if (featured !== undefined) where.featured = { equals: featured };
 
       const res = await payload.find({
