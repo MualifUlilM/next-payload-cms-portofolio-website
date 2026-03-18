@@ -7,7 +7,17 @@ type ProjectSeedData = {
   title: string;
   slug: string;
   description: string;
-  longDescription?: Record<string, unknown>;
+  longDescription?: {
+    root: {
+      type: string;
+      children: { [k: string]: unknown; type: string; version: number }[];
+      direction: "ltr" | "rtl" | null;
+      format: "" | "left" | "start" | "center" | "right" | "end" | "justify";
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   techStack?: { technology: string }[];
   category: ProjectCategory;
   liveUrl?: string;
@@ -56,8 +66,8 @@ function createParagraphNode(text: string) {
         version: 1,
       },
     ],
-    direction: "ltr",
-    format: "",
+    direction: "ltr" as const,
+    format: "" as const,
     indent: 0,
     textFormat: 0,
     textStyle: "",
@@ -70,8 +80,8 @@ function createRichText(paragraphs: string[]) {
     root: {
       type: "root",
       children: paragraphs.map(createParagraphNode),
-      direction: "ltr",
-      format: "",
+      direction: "ltr" as const,
+      format: "" as const,
       indent: 0,
       version: 1,
     },
