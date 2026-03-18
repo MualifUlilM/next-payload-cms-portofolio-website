@@ -115,6 +115,33 @@ export const SiteSettings: GlobalConfig = {
       label: "Profile Photo",
     },
     {
+      name: "branding",
+      type: "group",
+      label: "Branding",
+      fields: [
+        {
+          name: "logo",
+          type: "upload",
+          relationTo: "media",
+          label: "Navbar Logo",
+          admin: {
+            description:
+              "Upload a horizontal logo for the navbar. If empty, the site name will be shown with styled typography.",
+          },
+        },
+        {
+          name: "favicon",
+          type: "upload",
+          relationTo: "media",
+          label: "Favicon",
+          admin: {
+            description:
+              "Upload a square icon for browser tabs and bookmarks. PNG or ICO recommended.",
+          },
+        },
+      ],
+    },
+    {
       name: "email",
       type: "email",
       label: "Contact Email",

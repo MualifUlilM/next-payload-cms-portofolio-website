@@ -29,6 +29,7 @@ export function buildSiteMetadata(settings?: SiteSettings | null): Metadata {
   const ogImageUrl =
     getAbsoluteMediaUrl(settings?.seo?.ogImage?.url) ||
     `${BASE_URL}/api/og?title=${encodeURIComponent(defaultTitle)}`;
+  const faviconUrl = getAbsoluteMediaUrl(settings?.branding?.favicon?.url);
 
   return {
     metadataBase: new URL(BASE_URL),
@@ -59,6 +60,13 @@ export function buildSiteMetadata(settings?: SiteSettings | null): Metadata {
       description,
       images: [ogImageUrl],
     },
+    icons: faviconUrl
+      ? {
+          icon: faviconUrl,
+          shortcut: faviconUrl,
+          apple: faviconUrl,
+        }
+      : undefined,
     robots: {
       index: true,
       follow: true,

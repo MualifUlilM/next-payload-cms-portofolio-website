@@ -25,7 +25,10 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-[#FAFAFA] text-[#111111] antialiased">
-        <NavBar name={settings?.name} />
+        <NavBar
+          name={settings?.name}
+          logoUrl={settings?.branding?.logo?.url}
+        />
         <main>{children}</main>
         <Footer
           name={settings?.name}

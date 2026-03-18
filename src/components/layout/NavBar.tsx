@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { DM_Serif_Display } from "next/font/google";
 import { Button } from "@/components/ui/Button";
+import { getMediaUrl } from "@/lib/site";
 
 const NAV_LINKS = [
   { label: "Projects", href: "/projects" },
@@ -10,9 +13,21 @@ const NAV_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
-export function NavBar({ name }: { name?: string }) {
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+});
+
+export function NavBar({
+  name,
+  logoUrl,
+}: {
+  name?: string;
+  logoUrl?: string;
+}) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const logoSrc = getMediaUrl(logoUrl);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 16);
@@ -44,9 +59,24 @@ export function NavBar({ name }: { name?: string }) {
         {/* Logo */}
         <Link
           href="/"
-          className="text-base font-medium text-[#111111] hover:text-[#2563EB] transition-colors duration-150"
+          className="flex items-center min-w-0 text-[#111111] hover:text-[#2563EB] transition-colors duration-150"
         >
-          {name || "Your Name"}
+          {logoSrc ? (
+            <Image
+              src={logoSrc}
+              alt={name || "Site logo"}
+              width={160}
+              height={44}
+              className="h-9 w-auto max-w-[160px] object-contain"
+              priority
+            />
+          ) : (
+            <span
+              className={`${dmSerif.className} truncate text-[1.45rem] tracking-[-0.03em] leading-none`}
+            >
+              {name || "Your Name"}
+            </span>
+          )}
         </Link>
 
         {/* Desktop nav */}

@@ -119,6 +119,10 @@ export type SiteSettings = {
   tagline?: string;
   bio?: string;
   avatar?: MediaFile;
+  branding?: {
+    logo?: MediaFile;
+    favicon?: MediaFile;
+  };
   email?: string;
   availableForWork?: boolean;
   contact?: {
