@@ -1,4 +1,5 @@
 import type { Payload } from "payload";
+import type { ProjectCategory } from "@/types/payload";
 
 type SeedLogger = (message: string) => void;
 
@@ -140,7 +141,7 @@ const SKILL_GROUPS = [
   },
 ];
 
-const PROJECTS = [
+const PROJECTS: Array<{ category: ProjectCategory; [key: string]: unknown }> = [
   {
     title: "Meducation",
     slug: "meducation",
