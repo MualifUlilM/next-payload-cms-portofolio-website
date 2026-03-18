@@ -5,10 +5,6 @@ const { withPayload } = require("@payloadcms/next/withPayload");
 const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
-    localPatterns: [
-      { pathname: "/api/media/file/**" },
-      { pathname: "/media/**" },
-    ],
     remotePatterns: [
       {
         protocol: "https",
