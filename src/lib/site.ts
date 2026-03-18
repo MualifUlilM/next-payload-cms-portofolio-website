@@ -20,7 +20,14 @@ export function getMediaUrl(url?: string | null) {
   // Payload serves media via /api/media/file/<filename>, but files live in
   // public/media/ — rewrite to the static path so Next.js Image reads from
   // the filesystem instead of making a loopback HTTP request.
-  return normalized.replace(/^\/api\/media\/file\//, "/media/");
+  const rewritten = normalized.replace(/^\/api\/media\/file\//, "/media/");
+  // Decode percent-encoded characters (e.g. %20 → space) so Next.js can
+  // locate the file on disk by its actual filename.
+  try {
+    return decodeURIComponent(rewritten);
+  } catch {
+    return rewritten;
+  }
 }
 
 export function getAbsoluteUrl(url?: string | null) {
