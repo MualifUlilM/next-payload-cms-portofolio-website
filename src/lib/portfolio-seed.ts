@@ -3,6 +3,20 @@ import type { ProjectCategory } from "@/types/payload";
 
 type SeedLogger = (message: string) => void;
 
+type ProjectSeedData = {
+  title: string;
+  slug: string;
+  description: string;
+  longDescription?: Record<string, unknown>;
+  techStack?: { technology: string }[];
+  category: ProjectCategory;
+  liveUrl?: string;
+  githubUrl?: string;
+  featured?: boolean;
+  order?: number;
+  seo?: { metaTitle?: string; metaDescription?: string };
+};
+
 type BlogPostSeed = {
   title: string;
   slug: string;
@@ -141,7 +155,7 @@ const SKILL_GROUPS = [
   },
 ];
 
-const PROJECTS: Array<{ category: ProjectCategory; [key: string]: unknown }> = [
+const PROJECTS: ProjectSeedData[] = [
   {
     title: "Meducation",
     slug: "meducation",
