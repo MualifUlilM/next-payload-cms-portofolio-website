@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/sections/Hero";
 import { SocialProof } from "@/components/sections/SocialProof";
@@ -16,13 +15,7 @@ import {
   getSiteSettings,
   getSkills,
 } from "@/lib/payload";
-import { jsonLdPerson, jsonLdWebsite } from "@/lib/seo";
-
-export const metadata: Metadata = {
-  title: "Your Name — Fullstack Developer (Next.js & Payload CMS)",
-  description:
-    "Fullstack developer specializing in Next.js, Supabase, and Payload CMS. Building fast, maintainable web products for US and EU teams. Available for new projects.",
-};
+import { buildPersonJsonLd, buildWebsiteJsonLd } from "@/lib/seo";
 
 export default async function HomePage() {
   const [projects, skills, experience, testimonials, posts, settings] =
@@ -37,7 +30,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <JsonLd data={[jsonLdPerson, jsonLdWebsite]} />
+      <JsonLd data={[buildPersonJsonLd(settings), buildWebsiteJsonLd(settings)]} />
 
       <Hero
         name={settings?.name}

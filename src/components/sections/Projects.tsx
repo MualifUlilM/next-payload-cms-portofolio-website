@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { getMediaUrl } from "@/lib/site";
 import type { Project, ProjectCategory } from "@/types/payload";
 
 type FilterCategory = "All" | ProjectCategory;
@@ -81,6 +82,8 @@ function ProjectCard({
   index: number;
   shouldReduceMotion: boolean;
 }) {
+  const thumbnailSrc = getMediaUrl(project.thumbnail?.url);
+
   return (
     <motion.article
       initial={shouldReduceMotion ? {} : { opacity: 0, y: 24 }}
@@ -91,10 +94,10 @@ function ProjectCard({
     >
       {/* Thumbnail */}
       <div className="aspect-video bg-[#F5F5F5] relative overflow-hidden">
-        {project.thumbnail ? (
+        {thumbnailSrc ? (
           <Image
-            src={project.thumbnail.url}
-            alt={project.thumbnail.alt || project.title}
+            src={thumbnailSrc}
+            alt={project.thumbnail?.alt || project.title}
             fill
             className="object-cover"
             loading="lazy"

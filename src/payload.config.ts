@@ -1,6 +1,7 @@
-import { buildConfig, type RichTextAdapterProvider } from "payload";
+import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
 import sharp from "sharp";
 
@@ -38,12 +39,6 @@ function createDatabaseAdapter(connectionString: string) {
   });
 }
 
-const editor: RichTextAdapterProvider = async (args) => {
-  const { lexicalEditor } = await import("@payloadcms/richtext-lexical");
-
-  return lexicalEditor()(args);
-};
-
 export default buildConfig({
   admin: {
     user: "users",
@@ -53,7 +48,7 @@ export default buildConfig({
   },
   collections: [Users, Projects, Skills, Experience, Testimonials, Posts, Media],
   globals: [SiteSettings],
-  editor,
+  editor: lexicalEditor(),
   sharp,
   secret: process.env.PAYLOAD_SECRET || "dev-secret-change-in-production",
   typescript: {

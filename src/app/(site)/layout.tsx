@@ -5,6 +5,7 @@ import "../globals.css";
 import { NavBar } from "@/components/layout/NavBar";
 import { Footer } from "@/components/layout/Footer";
 import { getSiteSettings } from "@/lib/payload";
+import { buildSiteMetadata } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,18 +13,11 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://yourdomain.com"),
-  title: {
-    template: "%s | Your Name — Fullstack Developer",
-    default: "Your Name — Fullstack Developer (Next.js & Payload CMS)",
-  },
-  description:
-    "Fullstack developer specializing in Next.js, Supabase, and Payload CMS. Building fast, maintainable web products for US and EU teams.",
-  openGraph: { type: "website", locale: "en_US" },
-  twitter: { card: "summary_large_image" },
-  robots: { index: true, follow: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+
+  return buildSiteMetadata(settings);
+}
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSiteSettings();
@@ -33,7 +27,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <body className="bg-[#FAFAFA] text-[#111111] antialiased">
         <NavBar name={settings?.name} />
         <main>{children}</main>
-        <Footer name={settings?.name} socialLinks={settings?.socialLinks} />
+        <Footer
+          name={settings?.name}
+          tagline={settings?.tagline}
+          socialLinks={settings?.socialLinks}
+        />
       </body>
     </html>
   );

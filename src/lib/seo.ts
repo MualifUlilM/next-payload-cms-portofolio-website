@@ -1,35 +1,95 @@
 import type { Metadata } from "next";
+import type { SiteSettings } from "@/types/payload";
+import {
+  BASE_URL,
+  FALLBACK_META_DESCRIPTION,
+  FALLBACK_SITE_NAME,
+  getAbsoluteMediaUrl,
+  getAbsoluteUrl,
+} from "@/lib/site";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://yourdomain.com";
-const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Your Name";
+function getSiteName(settings?: SiteSettings | null) {
+  return settings?.name || FALLBACK_SITE_NAME;
+}
+
+export function getDefaultMetaTitle(settings?: SiteSettings | null) {
+  return (
+    settings?.seo?.defaultMetaTitle ||
+    `${getSiteName(settings)} — Fullstack Developer (Next.js & Payload CMS)`
+  );
+}
+
+export function getDefaultMetaDescription(settings?: SiteSettings | null) {
+  return settings?.seo?.defaultMetaDescription || FALLBACK_META_DESCRIPTION;
+}
+
+export function buildSiteMetadata(settings?: SiteSettings | null): Metadata {
+  const defaultTitle = getDefaultMetaTitle(settings);
+  const description = getDefaultMetaDescription(settings);
+  const ogImageUrl =
+    getAbsoluteMediaUrl(settings?.seo?.ogImage?.url) ||
+    `${BASE_URL}/api/og?title=${encodeURIComponent(defaultTitle)}`;
+
+  return {
+    metadataBase: new URL(BASE_URL),
+    title: {
+      template: `%s | ${defaultTitle}`,
+      default: defaultTitle,
+    },
+    description,
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      siteName: getSiteName(settings),
+      title: defaultTitle,
+      description,
+      url: BASE_URL,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: defaultTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: defaultTitle,
+      description,
+      images: [ogImageUrl],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export function buildMetadata({
   title,
   description,
   slug,
   ogImage,
+  settings,
 }: {
   title?: string;
   description?: string;
   slug?: string;
   ogImage?: string;
+  settings?: SiteSettings | null;
 }): Metadata {
-  const metaTitle = title
-    ? `${title} | ${SITE_NAME} — Fullstack Developer`
-    : `${SITE_NAME} — Fullstack Developer (Next.js & Payload CMS)`;
-
-  const metaDescription =
-    description ||
-    "Fullstack developer specializing in Next.js, Supabase, and Payload CMS. Building fast, maintainable web products for US and EU teams.";
-
-  const url = slug ? `${BASE_URL}/${slug}` : BASE_URL;
+  const metaTitle = title || getDefaultMetaTitle(settings);
+  const metaDescription = description || getDefaultMetaDescription(settings);
+  const url = slug ? getAbsoluteUrl(`/${slug.replace(/^\/+/, "")}`) : BASE_URL;
 
   const ogImageUrl =
-    ogImage ||
+    getAbsoluteMediaUrl(ogImage) ||
+    getAbsoluteMediaUrl(settings?.seo?.ogImage?.url) ||
     `${BASE_URL}/api/og?title=${encodeURIComponent(metaTitle)}`;
 
   return {
-    title: metaTitle,
+    title: title || { absolute: metaTitle },
     description: metaDescription,
     alternates: {
       canonical: url,
@@ -56,42 +116,46 @@ export function buildMetadata({
   };
 }
 
-export const jsonLdPerson = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: SITE_NAME,
-  url: BASE_URL,
-  jobTitle: "Fullstack Developer",
-  knowsAbout: [
-    "Next.js",
-    "React",
-    "TypeScript",
-    "Payload CMS",
-    "Supabase",
-    "PostgreSQL",
-    "Tailwind CSS",
-  ],
-  sameAs: [
-    process.env.NEXT_PUBLIC_GITHUB_URL,
-    process.env.NEXT_PUBLIC_LINKEDIN_URL,
-    process.env.NEXT_PUBLIC_TWITTER_URL,
-  ].filter(Boolean),
-};
+export function buildPersonJsonLd(settings?: SiteSettings | null) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: getSiteName(settings),
+    url: BASE_URL,
+    jobTitle: "Fullstack Developer",
+    knowsAbout: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Payload CMS",
+      "Supabase",
+      "PostgreSQL",
+      "Tailwind CSS",
+    ],
+    sameAs: [
+      settings?.socialLinks?.github || process.env.NEXT_PUBLIC_GITHUB_URL,
+      settings?.socialLinks?.linkedin || process.env.NEXT_PUBLIC_LINKEDIN_URL,
+      settings?.socialLinks?.twitter || process.env.NEXT_PUBLIC_TWITTER_URL,
+    ].filter(Boolean),
+  };
+}
 
-export const jsonLdWebsite = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: SITE_NAME,
-  url: BASE_URL,
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
+export function buildWebsiteJsonLd(settings?: SiteSettings | null) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: getSiteName(settings),
+    url: BASE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
     },
-    "query-input": "required name=search_term_string",
-  },
-};
+  };
+}
 
 export function buildArticleJsonLd({
   title,
@@ -115,20 +179,21 @@ export function buildArticleJsonLd({
     "@type": "Article",
     headline: title,
     description,
-    url: `${BASE_URL}/blog/${slug}`,
+    url: getAbsoluteUrl(`/blog/${slug}`),
     datePublished: publishedAt,
     dateModified: updatedAt || publishedAt,
     author: {
       "@type": "Person",
-      name: authorName || SITE_NAME,
+      name: authorName || FALLBACK_SITE_NAME,
       url: BASE_URL,
     },
-    image: image
-      ? [image]
-      : [`${BASE_URL}/api/og?title=${encodeURIComponent(title)}`],
+    image: [
+      getAbsoluteMediaUrl(image) ||
+        `${BASE_URL}/api/og?title=${encodeURIComponent(title)}`,
+    ],
     publisher: {
       "@type": "Person",
-      name: authorName || SITE_NAME,
+      name: authorName || FALLBACK_SITE_NAME,
       url: BASE_URL,
     },
   };
@@ -144,7 +209,7 @@ export function buildBreadcrumbJsonLd(
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url,
+      item: getAbsoluteUrl(item.url),
     })),
   };
 }

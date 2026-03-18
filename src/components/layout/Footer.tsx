@@ -8,6 +8,7 @@ const NAV_LINKS = [
 
 interface FooterProps {
   name?: string;
+  tagline?: string;
   socialLinks?: {
     github?: string;
     linkedin?: string;
@@ -15,7 +16,11 @@ interface FooterProps {
   };
 }
 
-export function Footer({ name = "Your Name", socialLinks }: FooterProps) {
+export function Footer({
+  name = "Your Name",
+  tagline,
+  socialLinks,
+}: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -28,7 +33,7 @@ export function Footer({ name = "Your Name", socialLinks }: FooterProps) {
               {name}
             </Link>
             <p className="mt-2 text-sm text-[#666666]">
-              Full-stack development for teams who need it done right.
+              {tagline || "Full-stack development for teams who need it done right."}
             </p>
             <p className="mt-4 text-sm text-[#666666]">
               Have a project in mind?{" "}

@@ -4,8 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Badge } from "@/components/ui/Badge";
-import { getPostBySlug, getPosts } from "@/lib/payload";
-import { buildArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { getPostBySlug, getPosts, getSiteSettings } from "@/lib/payload";
+import {
+  buildArticleJsonLd,
+  buildBreadcrumbJsonLd,
+} from "@/lib/seo";
+import { BASE_URL, getAbsoluteMediaUrl, getMediaUrl } from "@/lib/site";
 import { formatDate } from "@/lib/utils";
 
 interface Params {
@@ -28,17 +32,20 @@ export async function generateMetadata({
 
   const title = post.seo?.metaTitle || post.title;
   const description = post.seo?.metaDescription || post.excerpt;
-  const image = post.seo?.ogImage?.url || post.thumbnail?.url;
+  const image =
+    getAbsoluteMediaUrl(post.seo?.ogImage?.url || post.thumbnail?.url) ||
+    `${BASE_URL}/api/og?title=${encodeURIComponent(title)}`;
 
   return {
-    title,
+    title: post.seo?.metaTitle ? { absolute: post.seo.metaTitle } : post.title,
     description,
     openGraph: {
       title,
       description,
       type: "article",
       publishedTime: post.publishedAt,
-      images: image ? [{ url: image, width: 1200, height: 630 }] : [],
+      url: `${BASE_URL}/blog/${post.slug}`,
+      images: [{ url: image, width: 1200, height: 630 }],
     },
   };
 }
@@ -49,11 +56,13 @@ export default async function BlogPostPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const [post, settings] = await Promise.all([
+    getPostBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!post) notFound();
-
-  const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://yourdomain.com";
+  const thumbnailSrc = getMediaUrl(post.thumbnail?.url);
 
   const articleJsonLd = buildArticleJsonLd({
     title: post.title,
@@ -62,6 +71,7 @@ export default async function BlogPostPage({
     publishedAt: post.publishedAt,
     updatedAt: post.updatedAt,
     image: post.thumbnail?.url,
+    authorName: settings?.name,
   });
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
@@ -119,11 +129,11 @@ export default async function BlogPostPage({
           </div>
 
           {/* Thumbnail */}
-          {post.thumbnail && (
+          {thumbnailSrc && (
             <div className="aspect-video rounded-lg overflow-hidden mb-10">
               <Image
-                src={post.thumbnail.url}
-                alt={post.thumbnail.alt || post.title}
+                src={thumbnailSrc}
+                alt={post.thumbnail?.alt || post.title}
                 width={768}
                 height={432}
                 className="object-cover w-full h-full"

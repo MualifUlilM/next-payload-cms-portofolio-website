@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { getMediaUrl } from "@/lib/site";
 
 interface HeroProps {
   name?: string;
@@ -17,6 +18,7 @@ interface HeroProps {
 
 export function Hero({ name = "Your Name", availableForWork, avatarUrl, heading, subheading, primaryCtaLabel, secondaryCtaLabel }: HeroProps) {
   const shouldReduceMotion = useReducedMotion();
+  const avatarSrc = getMediaUrl(avatarUrl);
 
   const containerVariants = shouldReduceMotion
     ? undefined
@@ -107,9 +109,9 @@ export function Hero({ name = "Your Name", availableForWork, avatarUrl, heading,
               {/* Accent glow */}
               <div className="absolute inset-0 rounded-2xl bg-[#2563EB]/5 blur-2xl scale-110 -z-10" />
 
-              {avatarUrl ? (
+              {avatarSrc ? (
                 <Image
-                  src={avatarUrl}
+                  src={avatarSrc}
                   alt={`${name} — Fullstack Developer`}
                   width={480}
                   height={480}
