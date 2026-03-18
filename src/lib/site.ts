@@ -14,7 +14,13 @@ function normalizePath(value: string) {
 export function getMediaUrl(url?: string | null) {
   if (!url) return undefined;
 
-  return ABSOLUTE_URL_PATTERN.test(url) ? url : normalizePath(url);
+  if (ABSOLUTE_URL_PATTERN.test(url)) return url;
+
+  const normalized = normalizePath(url);
+  // Payload serves media via /api/media/file/<filename>, but files live in
+  // public/media/ — rewrite to the static path so Next.js Image reads from
+  // the filesystem instead of making a loopback HTTP request.
+  return normalized.replace(/^\/api\/media\/file\//, "/media/");
 }
 
 export function getAbsoluteUrl(url?: string | null) {
